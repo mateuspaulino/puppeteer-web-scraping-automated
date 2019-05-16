@@ -1,0 +1,26 @@
+{
+  "name": "webscraping",
+  "version": "1.0.0",
+  "description": "Using puppeteer to webscraping",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mateuspaulino/webscraping.git"
+  },
+  "keywords": [
+    "webscraping",
+    "puppeteer"
+  ],
+  "author": "Mateus Paulino",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mateuspaulino/webscraping/issues"
+  },
+  "homepage": "https://github.com/mateuspaulino/webscraping#readme",
+  "dependencies": {
+    "puppeteer": "^1.16.0"
+  }
+}
