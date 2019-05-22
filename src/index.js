@@ -67,7 +67,13 @@ webscraping().then((dataObj) => {
 
 				if (catchDifference) {
 					createFile(jsonPath)
-					// send email
+
+					const subject = 'A new evidence was found'
+					const text = 'Go to the website and check it!'
+
+					
+
+
 				}
 
 			})
