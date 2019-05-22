@@ -1,6 +1,19 @@
 const puppeteer = require('puppeteer')
 const fs = require('fs')
+const nodemailer = require('nodemailer');
 let bookingUrl = 'http://www.profnit.org.br/pt/sample-page/'
+
+const email = {
+	service: process.env.SERVICE,
+	auth: {
+		user: process.env.USER,
+		pass: process.env.PASSWORD
+	},
+	from: process.env.USER,
+	to: process.env.TO,
+	subject: 'A new evidence was found',
+	text: 'Check it on the website'
+}
 
 const webscraping = async () => {
 	const browser = await puppeteer.launch({
@@ -49,7 +62,10 @@ webscraping().then((dataObj) => {
 			fs.readFile(jsonPath, 'utf8', function (err, content) {
 				if (err) throw err
 
-				const { amount, publishedNews } = dataObj
+				const {
+					amount,
+					publishedNews
+				} = dataObj
 				const fileContent = JSON.parse(content)
 				const fileAmount = fileContent.amount
 				const fileNews = fileContent.publishedNews
@@ -68,12 +84,28 @@ webscraping().then((dataObj) => {
 				if (catchDifference) {
 					createFile(jsonPath)
 
-					const subject = 'A new evidence was found'
-					const text = 'Go to the website and check it!'
+					var transporter = nodemailer.createTransport({
+						service: email.service,
+						auth: email.auth
+					});
 
-					
+					var mailOptions = {
+						from: email.from,
+						to: email.to,
+						subject: email.subject,
+						text: email.text
+					};
 
+					transporter.sendMail(mailOptions, function (error, info) {
+						if (error) {
+							console.log(error);
+						} else {
+							console.log('Email sent: ' + info.response);
+						}
+					});
 
+				} else {
+					console.log('File is equal to page, no news to report')
 				}
 
 			})
