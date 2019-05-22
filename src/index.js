@@ -1,15 +1,16 @@
+require('dotenv').config()
 const puppeteer = require('puppeteer')
 const fs = require('fs')
-const nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer')
 let bookingUrl = 'http://www.profnit.org.br/pt/sample-page/'
 
 const email = {
 	service: process.env.SERVICE,
 	auth: {
-		user: process.env.USER,
-		pass: process.env.PASSWORD
+		user: process.env.USEREMAIL,
+		pass: process.env.PASSWORDEMAIL
 	},
-	from: process.env.USER,
+	from: process.env.USEREMAIL,
 	to: process.env.TO,
 	subject: 'A new evidence was found',
 	text: 'Check it on the website'
@@ -51,6 +52,7 @@ webscraping().then((dataObj) => {
 	const jsonPath = './data/news.json'
 
 	const createFile = path => {
+		console.log(dataObj)
 		fs.writeFile(path, JSON.stringify(dataObj), function (err) {
 			if (err) throw err
 		})
@@ -87,22 +89,22 @@ webscraping().then((dataObj) => {
 					var transporter = nodemailer.createTransport({
 						service: email.service,
 						auth: email.auth
-					});
+					})
 
 					var mailOptions = {
 						from: email.from,
 						to: email.to,
 						subject: email.subject,
 						text: email.text
-					};
+					}
 
 					transporter.sendMail(mailOptions, function (error, info) {
 						if (error) {
-							console.log(error);
+							console.log(error)
 						} else {
-							console.log('Email sent: ' + info.response);
+							console.log('Email sent: ' + info.response)
 						}
-					});
+					})
 
 				} else {
 					console.log('File is equal to page, no news to report')
