@@ -38,24 +38,36 @@ webscraping().then((dataObj) => {
 	const jsonPath = './data/news.json'
 
 	const createFile = path => {
-		fs.writeFile(path, JSON.stringify(dataObj), function(err) {
-			if (err) throw err;
-		});
+		fs.writeFile(path, JSON.stringify(dataObj), function (err) {
+			if (err) throw err
+		})
 	}
 
 	try {
 		if (fs.existsSync(jsonPath)) {
 
-			fs.readFile(jsonPath, 'utf8', function(err, content) {
-				if (err) throw err;
-				const { amount, publishedNews } = JSON.parse(content)
+			fs.readFile(jsonPath, 'utf8', function (err, content) {
+				if (err) throw err
 
-				if (amount !== dataObj.amount) {
-					// sends email
-					// create a new file with dataObj
+				const { amount, publishedNews } = dataObj
+				const fileContent = JSON.parse(content)
+				const fileAmount = fileContent.amount
+				const fileNews = fileContent.publishedNews
+
+				let catchDifference = false
+
+				if (fileAmount !== amount) {
+					catchDifference = true
 				} else {
-					// if any news is different from each other, sends email
-					// create a new file with dataObj
+					fileNews.forEach((news, i) => {
+						if (news !== publishedNews[i])
+							catchDifference = true
+					})
+				}
+
+				if (catchDifference) {
+					createFile(jsonPath)
+					// send email
 				}
 
 			})
@@ -63,9 +75,8 @@ webscraping().then((dataObj) => {
 		} else {
 			createFile(jsonPath)
 		}
-	} catch(err) {
+	} catch (err) {
 		console.error(err)
 	}
 
-}).catch(console.error);
-
+}).catch(console.error)
