@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer')
+const fs = require('fs')
 let bookingUrl = 'http://www.profnit.org.br/pt/sample-page/'
 
 const webscraping = async () => {
@@ -25,7 +26,6 @@ const webscraping = async () => {
 			amount: publishedNews.length,
 			publishedNews
 		}
-		console.log(dataObj)
 	} catch (e) {
 		console.log(e)
 	}
@@ -34,5 +34,17 @@ const webscraping = async () => {
 	return dataObj
 }
 
-webscraping()
+webscraping().then((dataObj) => {
+	console.log(dataObj);
+	// verify if the file exists
+
+	// compares file content with object
+
+	// if its different, send an alert and create a new file
+
+	// create the new file
+	// fs.writeFile("./data/news.json", JSON.stringify(dataObj), function(err) {
+	// 	if (err) throw err;
+	// });
+}).catch(console.error);
 
