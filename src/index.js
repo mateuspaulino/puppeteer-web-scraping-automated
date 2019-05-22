@@ -35,16 +35,37 @@ const webscraping = async () => {
 }
 
 webscraping().then((dataObj) => {
-	console.log(dataObj);
-	// verify if the file exists
+	const jsonPath = './data/news.json'
 
-	// compares file content with object
+	const createFile = path => {
+		fs.writeFile(path, JSON.stringify(dataObj), function(err) {
+			if (err) throw err;
+		});
+	}
 
-	// if its different, send an alert and create a new file
+	try {
+		if (fs.existsSync(jsonPath)) {
 
-	// create the new file
-	// fs.writeFile("./data/news.json", JSON.stringify(dataObj), function(err) {
-	// 	if (err) throw err;
-	// });
+			fs.readFile(jsonPath, 'utf8', function(err, content) {
+				if (err) throw err;
+				const { amount, publishedNews } = JSON.parse(content)
+
+				if (amount !== dataObj.amount) {
+					// sends email
+					// create a new file with dataObj
+				} else {
+					// if any news is different from each other, sends email
+					// create a new file with dataObj
+				}
+
+			})
+
+		} else {
+			createFile(jsonPath)
+		}
+	} catch(err) {
+		console.error(err)
+	}
+
 }).catch(console.error);
 
