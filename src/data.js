@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const email = {
 	service: process.env.SERVICE,
 	auth: {
@@ -12,10 +14,10 @@ const email = {
 
 const jsonPath = './json/news.json'
 
-const bookingUrl = 'http://www.profnit.org.br/pt/sample-page/'
+const pageURL = 'http://www.profnit.org.br/pt/sample-page/'
 
 module.exports = {
     email,
     jsonPath,
-    bookingUrl
+    pageURL
 }
