@@ -2,19 +2,13 @@ require('dotenv').config()
 const puppeteer = require('puppeteer')
 const fs = require('fs')
 const nodemailer = require('nodemailer')
-let bookingUrl = 'http://www.profnit.org.br/pt/sample-page/'
 
-const email = {
-	service: process.env.SERVICE,
-	auth: {
-		user: process.env.USEREMAIL,
-		pass: process.env.PASSWORDEMAIL
-	},
-	from: process.env.USEREMAIL,
-	to: process.env.TO,
-	subject: 'A new evidence was found',
-	text: 'Check it on the website'
-}
+const data = require('./data')
+const {
+	email,
+    jsonPath,
+    bookingUrl
+} = data
 
 const webscraping = async () => {
 	const browser = await puppeteer.launch({
@@ -50,7 +44,7 @@ const webscraping = async () => {
 }
 
 webscraping().then((dataObj) => {
-	const jsonPath = './data/news.json'
+	
 
 	const createFile = path => {
 		console.log(dataObj)
