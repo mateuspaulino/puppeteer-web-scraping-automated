@@ -1,5 +1,4 @@
 const fs = require('fs')
-const nodemailer = require('nodemailer')
 
 const data = require('./data')
 const {
@@ -9,25 +8,12 @@ const {
 } = data
 
 const mongoose = require('mongoose')
+mongoose
+    .connect(mongoURI, { useNewUrlParser: true })
+    .then(() => console.log('MongoDB Connected'))
+    .catch(err => console.log(err));
 
 const compareAndSaveResults = (dataObj) => {
-
-    mongoose
-        .connect(mongoURI, { useNewUrlParser: true })
-        .then(() => console.log('MongoDB Connected'))
-        .catch(err => console.log(err));
-
-    const News = require('./models/News');
-
-    const newNews = new News(dataObj);
-
-    newNews
-        .save().then(() => {
-            
-            mongoose.disconnect()
-        })
-        .catch(err => console.log(err))
-
 
     const createFile = path => {
         console.log(dataObj)
@@ -37,62 +23,63 @@ const compareAndSaveResults = (dataObj) => {
     }
 
 	try {
-		if (fs.existsSync(jsonPath)) {
 
-			fs.readFile(jsonPath, 'utf8', function (err, content) {
-				if (err) throw err
+        const News = require('./models/News')
+        const newNews = new News(dataObj)
 
-				const {
-					amount,
-					publishedNews
-				} = dataObj
-				const fileContent = JSON.parse(content)
-				const fileAmount = fileContent.amount
-				const fileNews = fileContent.publishedNews
+        // verify if didn't find any result
+        News.find({}, function(err, newsList) {
+            return newsList
+        }).then((newsList) => {
 
-				let catchDifference = false
+            if (newsList != "") {
 
-				if (fileAmount !== amount) {
-					catchDifference = true
-				} else {
-					fileNews.forEach((news, i) => {
-						if (news !== publishedNews[i])
-							catchDifference = true
-					})
-				}
+                const {
+                    amount,
+                    publishedNews
+                } = dataObj
+    
+                const dbId = newsList[0]._id
+                const dbAmount = newsList[0].amount
+                const dbNews = newsList[0].publishedNews
+    
+                let catchDifference = false
+    
+                if (dbAmount !== amount) {
+                    catchDifference = true
+                } else {
+                    dbNews.forEach((news, i) => {
+                        console.log(news)
+                        if (news !== publishedNews[i])
+                            catchDifference = true
+                    })
+                }
+    
+                if (catchDifference) {
+                    // createFile(jsonPath)
+                    // update database
+    
+                    //send email
+                    // send email as parameter
+    
+                } else {
+                    console.log('File is equal to page, no news to report')
+                }
 
-				if (catchDifference) {
-					createFile(jsonPath)
+            } else {
+                // save to database
+                newNews
+                .save().then(() => {
+                    
+                    console.log(dataObj)
+                    mongoose.disconnect()
+                })
+                .catch(err => console.log(err))
+            }
 
-					var transporter = nodemailer.createTransport({
-						service: email.service,
-						auth: email.auth
-					})
+        }).catch(err => console.log(err))
 
-					var mailOptions = {
-						from: email.from,
-						to: email.to,
-						subject: email.subject,
-						text: email.text
-					}
-
-					transporter.sendMail(mailOptions, function (error, info) {
-						if (error) {
-							console.log(error)
-						} else {
-							console.log('Email sent: ' + info.response)
-						}
-					})
-
-				} else {
-					console.log('File is equal to page, no news to report')
-				}
-
-			})
-
-		} else {
-			createFile(jsonPath)
-		}
+		
 	} catch (err) {
 		console.error(err)
 	}
