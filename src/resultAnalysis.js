@@ -25,9 +25,7 @@ const compareAndSaveResults = (dataObj) => {
 	try {
 
         const News = require('./models/News')
-        const newNews = new News(dataObj)
 
-        // verify if didn't find any result
         News.find({}, function(err, newsList) {
             return newsList
         }).then((newsList) => {
@@ -39,7 +37,7 @@ const compareAndSaveResults = (dataObj) => {
                     publishedNews
                 } = dataObj
     
-                const dbId = newsList[0]._id
+                const dbId = newsList[0].identifier
                 const dbAmount = newsList[0].amount
                 const dbNews = newsList[0].publishedNews
     
@@ -49,15 +47,25 @@ const compareAndSaveResults = (dataObj) => {
                     catchDifference = true
                 } else {
                     dbNews.forEach((news, i) => {
-                        console.log(news)
                         if (news !== publishedNews[i])
                             catchDifference = true
                     })
                 }
     
                 if (catchDifference) {
-                    // createFile(jsonPath)
                     // update database
+                    console.log(dbId)
+                    News.findOne({identifier: dbId}, function (err, news) {
+                        console.log(news)
+                        
+                        // news.amount = 100;
+                        // news.save(function (err) {
+                        //     if(err) {
+                        //         console.error('ERROR!');
+                        //     }
+                        //     console.log('deu bom')
+                        // });
+                    }); 
     
                     //send email
                     // send email as parameter
@@ -66,17 +74,19 @@ const compareAndSaveResults = (dataObj) => {
                     console.log('File is equal to page, no news to report')
                 }
 
+                mongoose.disconnect()
             } else {
-                // save to database
+                const newNews = new News(dataObj)
                 newNews
                 .save().then(() => {
-                    
                     console.log(dataObj)
                     mongoose.disconnect()
                 })
                 .catch(err => console.log(err))
             }
 
+        }).then(() => {
+            
         }).catch(err => console.log(err))
 
 		

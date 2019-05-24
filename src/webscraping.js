@@ -22,6 +22,7 @@ const webscraping = async (pageURL) => {
 		})
 
 		dataObj = {
+			identifier: 1,
 			amount: publishedNews.length,
 			publishedNews
 		}
