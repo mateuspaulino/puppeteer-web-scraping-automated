@@ -4,10 +4,30 @@ const nodemailer = require('nodemailer')
 const data = require('./data')
 const {
 	email,
-    jsonPath
+    jsonPath,
+    mongoURI
 } = data
 
+const mongoose = require('mongoose')
+
 const compareAndSaveResults = (dataObj) => {
+
+    mongoose
+        .connect(mongoURI, { useNewUrlParser: true })
+        .then(() => console.log('MongoDB Connected'))
+        .catch(err => console.log(err));
+
+    const News = require('./models/News');
+
+    const newNews = new News(dataObj);
+
+    newNews
+        .save().then(() => {
+            
+            mongoose.disconnect()
+        })
+        .catch(err => console.log(err))
+
 
     const createFile = path => {
         console.log(dataObj)

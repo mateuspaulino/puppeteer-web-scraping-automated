@@ -16,8 +16,11 @@ const jsonPath = './json/news.json'
 
 const pageURL = 'http://www.profnit.org.br/pt/sample-page/'
 
+const mongoURI = process.env.MONGOURI
+
 module.exports = {
     email,
     jsonPath,
-    pageURL
+    pageURL,
+    mongoURI
 }
