@@ -1,13 +1,11 @@
-require('dotenv').config()
-
 const data = require('./data')
 const {
     pageURL
 } = data
 
 const webscraping = require('./webscraping')
-const resultAnalysis = require('./resultAnalysis')
+const compareAndSaveResults = require('./resultAnalysis')
 
 webscraping(pageURL).then((dataObj) => {
-	resultAnalysis(dataObj)
+	compareAndSaveResults(dataObj)
 }).catch(console.error)
