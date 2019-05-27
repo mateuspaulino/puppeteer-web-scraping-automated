@@ -41,6 +41,7 @@ const compareAndSaveResults = dataObj => {
         if (catchDifference) {
           console.log("A new evidence was found, updating database...");
           notifyUser(email, publishedNews);
+          mongoose.set('useFindAndModify', false);
           return News.findOneAndUpdate({ _id: dbId }, dataObj);
         }
 
