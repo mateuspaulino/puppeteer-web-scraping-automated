@@ -17,10 +17,9 @@ const compareAndSaveResults = dataObj => {
     })
       .then(newsList => {
         if (newsList == "") {
+          console.log(`A new data was created:\n${JSON.stringify(dataObj)}`);
           const newNews = new News(dataObj);
-          newNews.save().catch(err => console.log(err));
-          console.log(dataObj);
-          return dataObj;
+          return newNews.save().catch(err => console.log(err));
         }
 
         const { amount, publishedNews } = dataObj;
@@ -41,7 +40,7 @@ const compareAndSaveResults = dataObj => {
 
         if (catchDifference) {
           console.log("A new evidence was found, updating database...");
-          notifyUser(email);
+          notifyUser(email, publishedNews);
           return News.findOneAndUpdate({ _id: dbId }, dataObj);
         }
 
