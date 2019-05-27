@@ -1,25 +1,25 @@
-const nodemailer = require('nodemailer')
+const nodemailer = require("nodemailer");
 
 const notifyUser = emailData => {
-    var transporter = nodemailer.createTransport({
-        service: emailData.service,
-        auth: emailData.auth
-    })
+  const transporter = nodemailer.createTransport({
+    service: emailData.service,
+    auth: emailData.auth
+  });
 
-    var mailOptions = {
-        from: emailData.from,
-        to: emailData.to,
-        subject: emailData.subject,
-        text: emailData.text
+  const mailOptions = {
+    from: emailData.from,
+    to: emailData.to,
+    subject: emailData.subject,
+    text: emailData.text
+  };
+
+  transporter.sendMail(mailOptions, function(error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
     }
+  });
+};
 
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error)
-        } else {
-            console.log('Email sent: ' + info.response)
-        }
-    })
-}
-
-module.exports = notifyUser
+module.exports = notifyUser;
