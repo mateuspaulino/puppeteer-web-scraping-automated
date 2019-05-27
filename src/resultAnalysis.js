@@ -1,81 +1,59 @@
-const fs = require('fs')
-const nodemailer = require('nodemailer')
+const notifyUser = require("./email");
+const data = require("./data");
+const { email, mongoURI } = data;
 
-const data = require('./data')
-const {
-	email,
-    jsonPath
-} = data
+const mongoose = require("mongoose");
+mongoose
+  .connect(mongoURI, { useNewUrlParser: true })
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log(err));
 
-const compareAndSaveResults = (dataObj) => {
+const compareAndSaveResults = dataObj => {
+  try {
+    const News = require("./models/News");
 
-    const createFile = path => {
-        console.log(dataObj)
-        fs.writeFile(path, JSON.stringify(dataObj), function (err) {
-            if (err) throw err
-        })
-    }
+    News.find({}, function(err, newsList) {
+      return newsList;
+    })
+      .then(newsList => {
+        if (newsList == "") {
+          console.log(`A new data was created:\n${JSON.stringify(dataObj)}`);
+          const newNews = new News(dataObj);
+          return newNews.save().catch(err => console.log(err));
+        }
 
-	try {
-		if (fs.existsSync(jsonPath)) {
+        const { amount, publishedNews } = dataObj;
 
-			fs.readFile(jsonPath, 'utf8', function (err, content) {
-				if (err) throw err
+        const dbId = newsList[0]._id;
+        const dbAmount = newsList[0].amount;
+        const dbNews = newsList[0].publishedNews;
 
-				const {
-					amount,
-					publishedNews
-				} = dataObj
-				const fileContent = JSON.parse(content)
-				const fileAmount = fileContent.amount
-				const fileNews = fileContent.publishedNews
+        let catchDifference = false;
 
-				let catchDifference = false
+        if (dbAmount !== amount) {
+          catchDifference = true;
+        } else {
+          dbNews.forEach((news, i) => {
+            if (news !== publishedNews[i]) catchDifference = true;
+          });
+        }
 
-				if (fileAmount !== amount) {
-					catchDifference = true
-				} else {
-					fileNews.forEach((news, i) => {
-						if (news !== publishedNews[i])
-							catchDifference = true
-					})
-				}
+        if (catchDifference) {
+          console.log("A new evidence was found, updating database...");
+          notifyUser(email, publishedNews);
+          mongoose.set('useFindAndModify', false);
+          return News.findOneAndUpdate({ _id: dbId }, dataObj);
+        }
 
-				if (catchDifference) {
-					createFile(jsonPath)
+        console.log("File is equal to page, no news to report");
+      })
+      .then(() => {
+        mongoose.disconnect();
+      })
+      .catch(err => console.log(err));
+  } catch (err) {
+    console.error(err);
+  }
+};
 
-					var transporter = nodemailer.createTransport({
-						service: email.service,
-						auth: email.auth
-					})
-
-					var mailOptions = {
-						from: email.from,
-						to: email.to,
-						subject: email.subject,
-						text: email.text
-					}
-
-					transporter.sendMail(mailOptions, function (error, info) {
-						if (error) {
-							console.log(error)
-						} else {
-							console.log('Email sent: ' + info.response)
-						}
-					})
-
-				} else {
-					console.log('File is equal to page, no news to report')
-				}
-
-			})
-
-		} else {
-			createFile(jsonPath)
-		}
-	} catch (err) {
-		console.error(err)
-	}
-}
-
-module.exports = compareAndSaveResults
+module.exports = compareAndSaveResults;
