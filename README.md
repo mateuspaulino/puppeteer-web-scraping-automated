@@ -18,7 +18,9 @@ Technologies:
 - Heroku
 
 [Twitter - @paulinodev](https://twitter.com/paulinodev)
+
 [Instagram - @mateusweb](https://www.instagram.com/mateusweb/)
+
 [LinkeIn - Mateus Paulino](https://www.linkedin.com/in/mateuspaulino/)
 
 ## Thank you!
