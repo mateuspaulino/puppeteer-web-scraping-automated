@@ -7,6 +7,7 @@ Application flow
 ![flow](https://i.ibb.co/QvzGX59/fluxograma.jpg)
 
 Application technologies
+
 ![technologies](https://i.ibb.co/1n6wgZZ/cover.jpg)
 
 Technologies:
