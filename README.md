@@ -4,11 +4,10 @@ The idea to this article came when I was upset about having to check every day a
 
 Application flow
 
-![flow](https://i.ibb.co/1n6wgZZ/cover.jpg)
+![flow](https://i.ibb.co/QvzGX59/fluxograma.jpg)
 
 Application technologies
-
-![technologies](https://i.ibb.co/QvzGX59/fluxograma.jpg)
+![technologies](https://i.ibb.co/1n6wgZZ/cover.jpg)
 
 Technologies:
 - Puppetter
