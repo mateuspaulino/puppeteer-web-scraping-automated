@@ -12,7 +12,7 @@ const email = {
   text: "Check it on the website"
 };
 
-const pageURL = "http://www.profnit.org.br/pt/sample-page/";
+const pageURL = "http://ppgcc.posgrad.ufsc.br/cursos/";
 
 const mongoURI = process.env.MONGOURI;
 
