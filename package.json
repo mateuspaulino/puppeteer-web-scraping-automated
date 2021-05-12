@@ -23,7 +23,7 @@
   "dependencies": {
     "dotenv": "^8.0.0",
     "mongoose": "^5.5.11",
-    "nodemailer": "^6.1.1",
+    "nodemailer": "^6.4.16",
     "puppeteer": "^1.16.0"
   }
 }
